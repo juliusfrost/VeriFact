@@ -10,7 +10,7 @@ from tqdm import tqdm
 from data import liar_dataset
 
 
-def train(data_dir, model, tokenizer, batch_size=16, block_size=128, device='cpu'):
+def test(data_dir, model, tokenizer, batch_size=16, block_size=128, device='cpu'):
     logging.debug('load training data')
     test_dataset = liar_dataset(tokenizer, data_dir, split='test', block_size=block_size)
 
