@@ -9,6 +9,7 @@ import torch.nn as nn
 
 from model import pretrained
 from train import train
+from eval import test
 
 
 def parse():
@@ -29,6 +30,7 @@ def parse():
     parser.add_argument('--logger-name', default=None)
     parser.add_argument('--dont-log', action='store_true')
     parser.add_argument('--dont-load-model-from-file', action='store_true')
+    parser.add_argument('--test', action='store_true')
 
     return parser.parse_args()
 
@@ -61,7 +63,10 @@ def main():
     if torch.cuda.device_count() > 1 and args.model_parallel:
         model = nn.DataParallel(model)
 
-    train(root, model, tokenizer, epochs=args.epochs, batch_size=args.batch_size, save_file=save_file, device=device)
+    if args.test:
+        test(root, model, tokenizer, batch_size=args.batch_size, device=device)
+    else:
+        train(root, model, tokenizer, epochs=args.epochs, batch_size=args.batch_size, save_file=save_file, device=device)
 
 
 if __name__ == '__main__':
