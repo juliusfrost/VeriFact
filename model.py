@@ -70,3 +70,30 @@ class Model(torch.nn.Module):
         h_3 = h_n[0]
         output = self.feed_forward(h_3)
         return output
+
+
+class VeriFact(torch.nn.Module):
+    def __init__(self, pretrained_model, stacked_model, freeze_weights=True):
+        super().__init__()
+        self.pretrained_model = pretrained_model
+        self.stacked_model = stacked_model
+
+    def forward(self, input_ids):
+        return self.stacked_model(self.pretrained_model(input_ids))
+
+
+class StackedModel(torch.nn.Module):
+    def __init__(self,
+                 pretrained_hidden_size,
+                 output_size,
+                 layer='rnn',
+                 hidden_size=512,
+                 num_layers=2, ):
+        super().__init__()
+        self.hidden_size = hidden_size
+        self.num_layers = num_layers
+        self.rnn = nn.GRU(pretrained_hidden_size, hidden_size, num_layers, bidirectional=False)
+        self.feed_forward = nn.Linear(hidden_size, output_size)
+
+    def forward(self, *input, **kwargs):
+        return
